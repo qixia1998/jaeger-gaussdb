@@ -43,7 +43,7 @@ database:
 ## Usage
 You can start jaeger in docker with the following command, including jaeger-uiã€‚
 
-`
+
 > docker run \                                                                                               
 -e SPAN_STORAGE_TYPE=grpc \
 -e GRPC_STORAGE_SERVER=jaeger-gaussdb:12345 \
@@ -58,11 +58,13 @@ You can start jaeger in docker with the following command, including jaeger-uiã€
 -p 14268:14268 \
 -p 14269:14269 \
 -p 9411:9411 \
-`
+
 
 `--grpc-storage.server=jaeger-postgresql:12345`
 
 `SPAN_STORAGE_TYPE="grpc"`
+
+You can use **main.go** in the `example` directory to batch create spans and send trace data to Jaeger.
 
 The official jaeger documentation is the best place to look for detailed instructions on using a external storage plugin. https://www.jaegertracing.io/docs/1.63/deployment/#storage-plugin
 
