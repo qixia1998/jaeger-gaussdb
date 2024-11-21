@@ -1,32 +1,71 @@
-This is the repository that contains PostgreSQL [Storage gRPC plugin for Jaeger](https://github.com/jaegertracing/jaeger/pull/1461).
+# Jaeger-GaussDB
 
-> IMPORTANT: This plugin is still under development. We are using it internally
-> already but the way we store data in PostgreSQL can change based on what do we
-> learn about the data structure!
+![GitHub License](https://img.shields.io/github/license/qixia1998/jaeger-gaussdb)
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=flat&logo=go&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=flat&logo=kubernetes&logoColor=white)
 
-## Compile
-In order to compile the plugin from source code you can use `go build`:
+jaeger-gaussdb is a GaussDB backed storage solution .
 
-```
-CGO_ENABLED=0 go build ./cmd/jaeger-pg-store/
-```
+## Run
+You can use this command.
 
-## Start
-In order to start plugin just tell jaeger the path to a config compiled plugin (password can be passed also as ENV: DB_PASSWORD).
+
 
 ```
-jaeger-all-in-one --grpc-storage-plugin.binary=./jaeger-pg-store --grpc-storage-plugin.configuration-file=./config-example.yaml
+1. git clone https://github.com/qixia1998/jaeger-gaussdb.git
+2. cd jaeger-gaussdb
+3. go mod tidy
+4. sql generate
+```
+Then: Performing a Database Migration at GaussDB.
+* use Goose
+* manual execution
+
+Next:
+
+<!-- x-release-please-start-version -->
+```
+go run cmd/jaeger-gaussdb/main.go --database.url='postgresql://db_user:db_password@host:port/jaeger' --grpc-server.host-port=jaeger-gaussdb:12345 --log-level=debug
+
+```
+<!-- x-release-please-end -->
+
+```
+# database connection options
+database:
+    # url to the database
+    url: "postgresql://db_user:db_password@host:port/jaeger" 
+    
+    # the maximum number of database connections 
+    maxConns: 10 
 ```
 
-## Tables
-This plugins create tables if they not exist:
+## Usage
+You can start jaeger in docker with the following command, including jaeger-ui。
 
-* spans
-* span_logs
-* span_refs
-* operations
-* services
+`
+> docker run \                                                                                               
+-e SPAN_STORAGE_TYPE=grpc \
+-e GRPC_STORAGE_SERVER=jaeger-gaussdb:12345 \
+-e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
+-p 6831:6831/udp \
+-p 6832:6832/udp \
+-p 5778:5778 \  
+-p 16686:16686 \
+-p 4317:4317 \
+-p 4318:4318 \    
+-p 14250:14250 \  
+-p 14268:14268 \
+-p 14269:14269 \
+-p 9411:9411 \
+`
 
-## License
+`--grpc-storage.server=jaeger-postgresql:12345`
 
-The PostgreSQL Storage gRPC Plugin for Jaeger is an [MIT licensed](LICENSE) open source project.
+`SPAN_STORAGE_TYPE="grpc"`
+
+The official jaeger documentation is the best place to look for detailed instructions on using a external storage plugin. https://www.jaegertracing.io/docs/1.63/deployment/#storage-plugin
+
+
+## Legacy
+This project started out as a simple fork of [Jozef Slezak's plugin of the same name](jozef-slezak/jaeger-postgresql), but was eventually completely rewritten. 
