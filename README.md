@@ -58,6 +58,8 @@ You can start jaeger in docker with the following command, including jaeger-uiã€
 -p 14268:14268 \
 -p 14269:14269 \
 -p 9411:9411 \
+jaegertracing/all-in-one:1.62.0
+
 
 
 `--grpc-storage.server=jaeger-postgresql:12345`
